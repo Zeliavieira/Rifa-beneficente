@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa Beneficente</title>
+    <style>
+        .numero {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .numero.comprado {
+            background-color: red;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rifa Beneficente</h1>
+    <div id="numeros"></div>
+    <button id="comprar">Comprar</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const numerosContainer = document.getElementById('numeros');
+            const comprarButton = document.getElementById('comprar');
+
+            const totalNumeros = 100;
+            const valorBilhete = 5;
+            const premio = 100;
+            let numerosComprados = [];
+
+            for (let i = 1; i <= totalNumeros; i++) {
+                const numero = document.createElement('div');
+                numero.classList.add('numero');
+                numero.textContent = i;
+
+                numero.addEventListener('click', function() {
+                    if (!numerosComprados.includes(i)) {
+                        numerosComprados.push(i);
+                        numero.classList.add('comprado');
+                    }
+                });
+
+                numerosContainer.appendChild(numero);
+            }
+
+            comprarButton.addEventListener('click', function() {
+                if (numerosComprados.length === 0) {
+                    alert('Por favor, escolha um número antes de comprar.');
+                    return;
+                }
+
+                const numeroEscolhido = numerosComprados[numerosComprados.length - 1];
+                const valorTotal = valorBilhete * numerosComprados.length;
+
+                const confirmarCompra = confirm(`Você escolheu o número ${numeroEscolhido}. O valor total da compra é R$ ${valorTotal}. Deseja confirmar a compra?`);
+
+                if (confirmarCompra) {
+                    const linkPagamento = `https://nubank.com.br/pagar/q243j/2e5SFozRk3?valor=5&descricao=Rifa+Beneficente+N6?valor=${valorTotal}&descricao=Rifa+Beneficente+N${numeroEscolhido}`;
+                    window.open(linkPagamento, '_blank');
+                    numerosComprados.push(numeroEscolhido); // Marca o número como comprado
+                    const numeroSelecionado = document.querySelector(`.numero:nth-child(${numeroEscolhido})`);
+                    numeroSelecionado.classList.add('comprado');
+                    numeroSelecionado.style.pointerEvents = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
